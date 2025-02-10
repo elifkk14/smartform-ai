@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Request Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Appointment Request Form</h2>
+        <h3>Let us know how we can help you!</h3>
+    
+        <form id="appointment-form">
+            <div class="form-section">
+                <div class="row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" name="first_name" required>
+                        <button class="remove-btn" onclick="removeField(event)">×</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" name="last_name" required>
+                        <button class="remove-btn" onclick="removeField(event)">×</button>
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" required>
+                        <button class="remove-btn" onclick="removeField(event)">×</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" name="phone" placeholder="(555) 123-4567" required>
+                        <button class="remove-btn" onclick="removeField(event)">×</button>
+                    </div>
+                </div>
+    
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" name="address" placeholder="Street Address">
+                    <input type="text" name="address2" placeholder="Apt, Suite, etc.">
+                    <div class="row">
+                        <input type="text" name="city" placeholder="City">
+                        <input type="text" name="state" placeholder="State">
+                    </div>
+                    <input type="text" name="zip" placeholder="ZIP Code">
+                    <button class="remove-btn" onclick="removeField(event)">×</button>
+                </div>
+    
+                <div class="form-group">
+                    <label>Preferred Date & Time</label>
+                    <input type="text" class="datetime-picker" name="preferred_datetime">
+                </div>
+    
+                <div class="form-group">
+                    <label>Service Preferences</label>
+                    <textarea name="services" rows="3" placeholder="Describe the services you're interested in..."></textarea>
+                    <button class="remove-btn" onclick="removeField(event)">×</button>
+                </div>
+    
+                <div class="form-group">
+                    <label>Promotional Notifications</label>
+                    <div class="row">
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="promotional_emails">
+                            <span class="slider"></span>
+                            <span class="toggle-label">Email</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="promotional_sms">
+                            <span class="slider"></span>
+                            <span class="toggle-label">SMS</span>
+                        </label>
+                    </div>
+                </div>             
+    
+                <div class="button-container">
+                    <button type="button" class="primary-btn" onclick="addField()">
+                        <span>➕</span> Add Field
+                    </button>
+                    <button type="button" class="secondary-btn" onclick="analyzeForm()">
+                        <span>🤖</span> AI Analysis
+                    </button>
+                    <button type="submit" class="primary-btn" style="flex-grow: 1;">
+                        Submit Form
+                    </button>
+                </div>
+                </form>
+                
+                <!-- 📌 AI Analysis Paneli -->
+                <div id="ai-panel">
+                    <div class="ai-panel-header">
+                        <h3>AI Recommendations</h3>
+                        <button class="remove-btn" onclick="closeAiPanel()">×</button>
+                    </div>
+                    <div id="suggestions-container"></div>
+                    <div id="suggested-questions-container"></div>
+                </div>
+                
+                
+<!-- 📌 AI Question Assistant Modal -->
+<div id="question-assistant-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>AI Question Assistant</h3>
+            <button class="close-btn" onclick="toggleQuestionAssistant()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="question-input">
+                <input type="text" id="user-question-input" placeholder="Type a question...">
+                <button class="generate-btn" onclick="getQuestionSuggestions()">Generate</button>
+            </div>
+            <div id="question-suggestions-container">
+                <h4>Suggested Questions</h4>
+                <ul class="suggestion-list" id="ai-suggested-questions-list"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 📌 AI Questions Butonu (Bağımsız Aç/Kapat) -->
+<button class="floating-question-btn" onclick="toggleQuestionAssistant()">
+    🔍 AI Questions
+</button>
+
+                
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        const API_URL = "http://127.0.0.1:5006/analyze-ai";  // Doğru API endpoint
+    
+        document.addEventListener("DOMContentLoaded", function() {
+            flatpickr(".datetime-picker", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                minDate: "today",
+                time_24hr: true
+            });
+    
+            loadFields();  // Sayfa yüklendiğinde eklenen alanları geri getir
+        });
+    
+        function addField() {
+            const fieldId = `field-${Date.now()}`;
+            const newField = document.createElement('div');
+            newField.className = 'form-group';
+            newField.innerHTML = `
+                <label contenteditable="true" oninput="updateLabel('${fieldId}', this.innerText)">New Field</label>
+                <input type="text" name="${fieldId}" placeholder="Enter value">
+                <button class="remove-btn" onclick="removeField(event, '${fieldId}')">×</button>
+            `;
+    
+            document.querySelector('.form-section').appendChild(newField);
+            saveFields();  // Yeni alan eklenince kaydet
+        }
+    
+        function removeField(event, fieldId) {
+            event.target.closest('.form-group').remove();
+            removeFieldFromStorage(fieldId);
+        }
+    
+        function updateLabel(fieldId, newLabel) {
+            let fields = JSON.parse(localStorage.getItem("formFields")) || [];
+            let field = fields.find(f => f.id === fieldId);
+            if (field) {
+                field.label = newLabel;
+                localStorage.setItem("formFields", JSON.stringify(fields));
+            }
+        }
+    
+        function saveFields() {
+            let fields = [];
+            document.querySelectorAll('.form-group').forEach(group => {
+                let label = group.querySelector("label")?.innerText.trim();
+                let input = group.querySelector("input");
+    
+                if (input && label) {
+                    fields.push({
+                        id: input.name,
+                        label: label,
+                        placeholder: input.placeholder
+                    });
+                }
+            });
+            localStorage.setItem("formFields", JSON.stringify(fields));
+        }
+    
+        function loadFields() {
+            let fields = JSON.parse(localStorage.getItem("formFields")) || [];
+            fields.forEach(field => {
+                const newField = document.createElement('div');
+                newField.className = 'form-group';
+                newField.innerHTML = `
+                    <label contenteditable="true" oninput="updateLabel('${field.id}', this.innerText)">${field.label}</label>
+                    <input type="text" name="${field.id}" placeholder="${field.placeholder}">
+                    <button class="remove-btn" onclick="removeField(event, '${field.id}')">×</button>
+                `;
+                document.querySelector('.form-section').appendChild(newField);
+            });
+        }
+    
+        function removeFieldFromStorage(fieldId) {
+            let fields = JSON.parse(localStorage.getItem("formFields")) || [];
+            fields = fields.filter(field => field.id !== fieldId);
+            localStorage.setItem("formFields", JSON.stringify(fields));
+        }
+
+// 📌 **Diğer kısım : 
+function addSuggestedQuestion(questionText) {
+    const fieldId = `field-${Date.now()}`;
+    const newField = document.createElement('div');
+    newField.className = 'form-group';
+    newField.innerHTML = `
+        <label contenteditable="true" oninput="updateLabel('${fieldId}', this.innerText)">${questionText}</label>
+        <input type="text" name="${fieldId}" placeholder="Enter value">
+        <button class="remove-btn" onclick="removeField(event, '${fieldId}')">×</button>
+    `;
+
+    document.querySelector('.form-section').appendChild(newField);
+    saveFields();  // 📌 **Yeni soru eklenince kaydet**
+}
+
+function analyzeForm() {
+    const form = document.getElementById('appointment-form');
+    const formData = new FormData(form);
+    const suggestionsPanel = document.getElementById('ai-panel');
+    const suggestionsContainer = document.getElementById('suggestions-container');
+    const questionsContainer = document.getElementById('suggested-questions-container');
+
+    let formattedData = { questions: [] };
+    let existingQuestions = [];
+
+    // 📌 Extract questions from the form
+    formData.forEach((value, key) => {
+        let inputElement = document.querySelector(`[name="${key}"]`);
+        let placeholder = inputElement?.placeholder || "";
+
+        formattedData.questions.push({
+            name: key,
+            type: inputElement?.type || "text",
+            placeholder: placeholder
+        });
+
+        let labelText = inputElement?.labels?.[0]?.innerText?.trim().toLowerCase();
+        if (labelText) existingQuestions.push(labelText);
+        else if (placeholder) existingQuestions.push(placeholder.toLowerCase());
+    });
+
+    formattedData.form_title = document.querySelector("h2")?.innerText.trim() || "Unknown";
+    console.log("📌 Form Title Sent:", formattedData.form_title);
+
+    // 📌 Send the data to AI analysis API
+    fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formattedData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("📌 API Response:", data);
+
+        // 📌 Open and make AI panel visible
+        suggestionsPanel.classList.add("open");
+        suggestionsPanel.style.display = "block";
+
+        // 📌 Display AI recommendations
+        suggestionsContainer.innerHTML = formatAISuggestions(data.suggestions);
+        questionsContainer.innerHTML = formatSuggestedQuestions(data.suggested_questions, existingQuestions);
+    })
+    .catch(error => {
+        console.error('🚨 Fetch Error:', error);
+        suggestionsContainer.innerHTML = `<p class='error-message'>Error fetching AI analysis. Check console for details.</p>`;
+    });
+}
+
+/**
+ * 📌 Format AI recommendations into readable cards
+ */
+ function formatAISuggestions(suggestions) {
+    if (!Array.isArray(suggestions) || suggestions.length === 0) {
+        return "<p class='no-suggestions'>No suggestions available.</p>";
+    }
+
+    let outputHTML = "";
+
+    suggestions.forEach(suggestion => {
+        // Extract lines and remove empty spaces
+        let lines = suggestion.split("\n").map(line => line.trim()).filter(line => line.length > 0);
+        
+        outputHTML += `<div class="suggestion-card"><ul>`; // Start card with a list
+
+        if (lines.length > 0) {
+            // First line is the title, make it a strong list item
+            outputHTML += `<li><strong>${lines[0]}</strong></li>`;
+            
+            // Remaining lines as list items
+            for (let i = 1; i < lines.length; i++) {
+                outputHTML += `<li>${lines[i]}</li>`;
+            }
+        }
+
+        outputHTML += `</ul></div>`; // Close list and card
+    });
+
+    return outputHTML;
+}
+
+
+/**
+ * 📌 Format AI-suggested questions into a structured list
+ */
+function formatSuggestedQuestions(suggestedQuestions, existingQuestions) {
+    if (!Array.isArray(suggestedQuestions) || suggestedQuestions.length === 0) {
+        return "<p class='no-suggestions'>No AI-suggested questions available.</p>";
+    }
+
+    // Remove duplicates and format the questions
+    const cleanQuestions = suggestedQuestions
+        .map(q => q.replace(/^\d+\.\s*/, '').trim().toLowerCase())
+        .filter(q => !existingQuestions.includes(q));
+
+    if (cleanQuestions.length === 0) {
+        return "<p class='no-suggestions'>All AI-suggested questions already exist in the form.</p>";
+    }
+
+    return `
+        <h3 class='suggestion-header'>AI Suggested Questions</h3>
+        <ul class='suggested-questions-list'>
+            ${cleanQuestions.map(q => `
+                <li class='suggestion-question'>
+                    <span>${q}</span>
+                    <button class='add-question-btn' onclick="addSuggestedQuestion('${q}')">➕ Add</button>
+                </li>
+            `).join('')}
+        </ul>
+    `;
+    
+        }
+        
+
+       
+        function getQuestionSuggestions() {
+    const userQuestion = document.getElementById("user-question-input").value.trim();
+
+    if (!userQuestion) {
+        alert("Please enter a question before generating AI suggestions.");
+        return;
+    }
+
+    // **HTML başlığını (title) al, eğer `form-title` ID'si varsa onu kullan**
+    const formPurpose = document.getElementById("form-title") 
+        ? document.getElementById("form-title").innerText.trim() 
+        : document.title.trim();
+
+    fetch("http://127.0.0.1:5006/suggest-question", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: userQuestion, form_purpose: formPurpose }) // Form başlığını da gönder
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Server responded with ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("📌 AI Question Suggestions:", data.suggested_variants);
+        
+        const suggestionsList = document.getElementById("ai-suggested-questions-list");
+        if (!Array.isArray(data.suggested_variants) || data.suggested_variants.length === 0) {
+            console.error("🚨 AI Question Suggestions is empty:", data.suggested_variants);
+            suggestionsList.innerHTML = "<p>No AI suggestions available.</p>";
+        } else {
+            suggestionsList.innerHTML = data.suggested_variants
+                .map(q => `<li>${q} <button onclick="addSuggestedQuestion('${q}')">➕ Add</button></li>`)
+                .join('');
+        }
+    })
+    .catch(error => {
+        console.error('🚨 Fetch Error:', error);
+        document.getElementById("ai-suggested-questions-list").innerHTML = "<p class='error-message'>AI Question Suggestions failed.</p>";
+    });
+}
+
+
+
+function toggleQuestionAssistant() {
+    const modal = document.getElementById("question-assistant-modal");
+    modal.style.display = modal.style.display === "block" ? "none" : "block";
+}
+
+function closeAiPanel() {
+    const aiPanel = document.getElementById('ai-panel');
+    aiPanel.classList.remove("open"); // 📌 `.open` sınıfını kaldır
+    setTimeout(() => aiPanel.style.display = "none", 400); // 📌 400ms sonra `display: none;` yap
+}
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,465 @@
+:root {
+    --primary-color: #4c72fb;
+    --hover-color: #4f46e5;
+    --background: #eef2ff;
+    --text-dark: #1e293b;
+    --text-light: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    line-height: 1.5;
+}
+
+.container {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    width: 100%;
+    max-width: 680px;
+    box-shadow: var(--shadow-light);
+    position: relative;
+}
+
+/* 📌 Başlıklar */
+h2 {
+    font-size: 2rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+h3 {
+    color: var(--text-light);
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* 📌 Form Alanları */
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-weight: 500;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+}
+
+input,
+textarea {
+    padding: 0.8rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    width: 100%;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* 📌 Butonlar */
+.button-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.primary-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+.primary-btn:hover {
+    background: var(--hover-color);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+}
+
+.secondary-btn {
+    background: #f1f5f9;
+    color: var(--text-dark);
+}
+
+.secondary-btn:hover {
+    background: #e2e8f0;
+}
+
+/* 📌 AI Paneli */
+
+/* 📌 Modern AI Paneli */
+#ai-panel {
+    position: fixed;
+    top: 50%;
+    right: -400px; /* Başlangıçta gizli */
+    transform: translateY(-50%);
+    width: 360px;
+    max-height: 80vh;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transition: right 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    z-index: 100;
+    overflow-y: auto;
+    opacity: 0;
+    border: 2px solid var(--border-color);
+}
+
+/* 📌 Panel Açılınca */
+#ai-panel.open {
+    right: 2rem;
+    opacity: 1;
+    display: block;
+}
+
+/* 📌 AI Panel Başlık */
+.ai-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.ai-panel-header h3 {
+    color: var(--text-dark);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+/* 📌 Kapatma Butonu */
+.ai-panel-header .remove-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+/* 📌 Kapatma Butonu Sağ Üste Sabitleme */
+.ai-panel-header .remove-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fee2e2;
+    color: #dc2626;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+.ai-panel-header .remove-btn:hover {
+    background: #fecaca;
+}
+
+/* 📌 AI Öneri Kartları */
+.suggestion-card {
+    background: var(--background);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: var(--text-dark);
+    border-left: 4px solid var(--primary-color);
+}
+
+.suggestion-card p {
+    margin: 0;
+}
+
+/* 📌 AI Tarafından Önerilen Sorular */
+#suggested-questions-container {
+    margin-top: 15px;
+}
+
+.suggested-questions-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.suggested-questions-list li {
+    background: #eef2ff;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.suggested-questions-list button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.suggested-questions-list button:hover {
+    background: var(--hover-color);
+}
+
+/* 📌 Mobil Uyumluluk */
+@media (max-width: 768px) {
+    #ai-panel {
+        width: 90%;
+        right: -100%;
+    }
+
+    #ai-panel.open {
+        right: 5%;
+    }
+}
+
+
+/* 📌 Silme Butonları */
+.remove-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fee2e2;
+    color: #dc2626;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.remove-btn:hover {
+    background: #fecaca;
+}
+
+/* 📌 AI Question Assistant (Bağımsız Modern Modal) */
+#question-assistant-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 450px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+    padding: 25px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+/* 📌 Modal Başlık */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.modal-header h3 {
+    color: var(--text-dark);
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+/* 📌 AI Question Assistant Açma Butonu */
+.floating-question-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #364c9c;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.floating-question-btn:hover {
+    background: var(--hover-color);
+}
+
+/* 📌 Modal Kapatma Butonu */
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #dc2626;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #b91c1c;
+}
+/* 📌 Modal Gövde */
+.modal-body {
+    padding: 15px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 📌 Kullanıcı Soru Girişi */
+.question-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.question-input input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+}
+
+.question-input input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
+}
+/* 📌 AI Önerileri */
+#question-suggestions-container {
+    margin-top: 10px;
+}
+
+.suggestion-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.suggestion-list li {
+    background: #eef2ff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.suggestion-list button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.suggestion-list button:hover {
+    background: var(--hover-color);
+}
+
+/* 📌 Mobil Uyumluluk */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .container {
+        padding: 1.5rem;
+        border-radius: 1rem;
+    }
+
+    #ai-panel {
+        width: 90%;
+        right: -100%;
+    }
+
+    #ai-panel.open {
+        right: 5%;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .button-container button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .floating-question-btn {
+        bottom: 15px;
+        right: 15px;
+    }
+}

@@ -1,0 +1,53 @@
+[
+    {
+        "user_id": "user_001",
+        "timestamp": "2025-02-08T15:30:00Z",
+        "form_completed": true,
+        "responses": [
+            {"question_id": 1, "question_text": "First Name", "time_spent": 5, "skipped": false},
+            {"question_id": 2, "question_text": "Last Name", "time_spent": 6, "skipped": false},
+            {"question_id": 3, "question_text": "Email Address", "time_spent": 10, "skipped": false},
+            {"question_id": 4, "question_text": "Phone Number", "time_spent": 15, "skipped": false},
+            {"question_id": 5, "question_text": "Address", "time_spent": 18, "skipped": false},
+            {"question_id": 6, "question_text": "City", "time_spent": 10, "skipped": false},
+            {"question_id": 7, "question_text": "State", "time_spent": 8, "skipped": false},
+            {"question_id": 8, "question_text": "ZIP Code", "time_spent": 12, "skipped": false},
+            {"question_id": 9, "question_text": "Preferred Date & Time", "time_spent": 20, "skipped": true},
+            {"question_id": 10, "question_text": "Service Preferences", "time_spent": 25, "skipped": false}
+        ]
+    },
+    {
+        "user_id": "user_002",
+        "timestamp": "2025-02-08T16:45:00Z",
+        "form_completed": false,
+        "responses": [
+            {"question_id": 1, "question_text": "First Name", "time_spent": 3, "skipped": false},
+            {"question_id": 2, "question_text": "Last Name", "time_spent": 5, "skipped": false},
+            {"question_id": 3, "question_text": "Email Address", "time_spent": 8, "skipped": true},
+            {"question_id": 4, "question_text": "Phone Number", "time_spent": 12, "skipped": false},
+            {"question_id": 5, "question_text": "Address", "time_spent": 20, "skipped": false},
+            {"question_id": 6, "question_text": "City", "time_spent": 15, "skipped": false},
+            {"question_id": 7, "question_text": "State", "time_spent": 10, "skipped": false},
+            {"question_id": 8, "question_text": "ZIP Code", "time_spent": 5, "skipped": true},
+            {"question_id": 9, "question_text": "Preferred Date & Time", "time_spent": 10, "skipped": true},
+            {"question_id": 10, "question_text": "Service Preferences", "time_spent": 0, "skipped": true}
+        ]
+    },
+    {
+        "user_id": "user_003",
+        "timestamp": "2025-02-08T17:20:00Z",
+        "form_completed": true,
+        "responses": [
+            {"question_id": 1, "question_text": "First Name", "time_spent": 4, "skipped": false},
+            {"question_id": 2, "question_text": "Last Name", "time_spent": 7, "skipped": false},
+            {"question_id": 3, "question_text": "Email Address", "time_spent": 9, "skipped": false},
+            {"question_id": 4, "question_text": "Phone Number", "time_spent": 14, "skipped": false},
+            {"question_id": 5, "question_text": "Address", "time_spent": 22, "skipped": false},
+            {"question_id": 6, "question_text": "City", "time_spent": 17, "skipped": false},
+            {"question_id": 7, "question_text": "State", "time_spent": 12, "skipped": false},
+            {"question_id": 8, "question_text": "ZIP Code", "time_spent": 8, "skipped": false},
+            {"question_id": 9, "question_text": "Preferred Date & Time", "time_spent": 15, "skipped": false},
+            {"question_id": 10, "question_text": "Service Preferences", "time_spent": 20, "skipped": false}
+        ]
+    }
+]
