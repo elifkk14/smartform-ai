@@ -1,0 +1,35 @@
+# .gitignore
+.vscode/
+.idea/
+
+
+# 🚀 Python Cache Dosyaları
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🚀 Sanal Ortam (Virtual Environment)
+venv/
+env/
+
+# 🚀 IDE ve Editör Ayarları
+.vscode/
+.idea/
+
+# 🚀 Sistem Dosyaları (Mac & Windows)
+.DS_Store
+Thumbs.db
+
+# 🚀 Log Dosyaları
+*.log
+
+# 🚀 AI Model Dosyaları (Büyük dosyalar için)
+*.pt
+*.h5
+*.pkl
+*.onnx
+
+# 🚀 API Anahtarları ve Çevresel Değişkenler
+.env
+config.json
